@@ -1,148 +1,208 @@
-# TechStream v1.0.0 Lightweight LAN Media Streaming for Windows
+# TechStream
+Lightweight LAN Media Streaming for Windows
 
-OVERVIEW
+TechStream is a **portable LAN media server** designed for simple, fast streaming of local media libraries without cloud services.
 
-TechStream is a lightweight Windows desktop application that streams
-local media folders over LAN using HTTP with automatic M3U playlist
-generation.
+Stream your media to any device on your network.  
+No cloud. No accounts. No tracking. Just local streaming.
 
-Stream your local media library to other devices on your network. No
-cloud. No accounts. No tracking. Just local streaming.
+---
 
-------------------------------------------------------------------------
+## Download
 
-FEATURES
+Download the latest release from the GitHub Releases page:
 
--   Stream local video files over LAN
--   Built-in HTTP server (Kestrel)
--   Byte-range support (seeking works in VLC)
--   In-browser playback via /stream/{id}
--   Auto-generated /playlist.m3u
--   Optional custom web interface
--   Portable (no installer required)
+https://github.com/ablestudio-dev/techstream/releases
 
-------------------------------------------------------------------------
+Extract the ZIP file and run:
 
-REQUIREMENTS
+```
+TechStream.exe
+```
 
--   Windows 10 or Windows 11 (64-bit)
--   Same LAN network as the client device
+No installer required.
 
-(No additional runtime installation required. This build is
-self-contained.)
+---
 
-------------------------------------------------------------------------
+## Overview
 
-QUICK START
+TechStream streams local media folders or M3U playlists over LAN using a built-in HTTP server.
 
-1.  Extract the ZIP file.
+Version **3.x** introduces the **Persistent M3U Library system**, allowing multiple playlists to be hosted, browsed, and streamed through the upgraded built-in web interface while maintaining deterministic hash-based streaming for reliable resume behavior.
 
-2.  Run TechStream.exe.
+---
 
-3.  Select a folder containing video files or load an M3U playlist.
+## Features
 
-4.  Click Start Server.
+- Stream local video files over LAN
+- Built-in HTTP server (Kestrel)
+- Byte-range streaming (seeking works in VLC)
+- Deterministic hash-based streaming (`/stream/{hash}`)
+- Automatic M3U playlist generation
+- Persistent M3U playlist library
+- Playlist Manager for loading and organizing playlists
+- Host multiple playlists simultaneously
+- Resume-safe playlist switching
+- Embedded browser video playback in the default web interface
+- Upgraded built-in web interface
+- Optional custom web interface
+- Portable (no installer required)
 
-5.  On another device, open VLC.
+---
 
-6.  Go to Media → Open Network Stream.
+## Quick Start
 
-7.  Enter:
+1. Extract the release ZIP file.
+2. Run **TechStream.exe**.
+3. Select a media folder or load an M3U playlist.
+4. Click **Start Server**.
+5. On another device, open **VLC**.
+6. Go to **Media → Open Network Stream**.
+7. Enter:
 
-    http://YOUR-LAN-IP:5050/playlist.m3u
+```
+http://YOUR-LAN-IP:5050/playlist.m3u
+```
 
 Example:
 
-	http://192.168.1.42:5050/playlist.m3u
+```
+http://192.168.1.42:5050/playlist.m3u
+```
 
-------------------------------------------------------------------------
+---
 
-OPTIONAL AUTHENTICATION
+## Playlist Library
+
+TechStream supports multiple playlist modes.
+
+### Folder Mode
+- Indexed files become the active playlist.
+- Natural sorting is applied.
+
+### M3U Mode
+- Loaded playlists become canonical file lists.
+- Playlist order is preserved exactly.
+
+### Persistent Playlist Library
+- Loaded playlists remain available in the library.
+- Multiple playlists can be hosted simultaneously.
+
+Available playlist routes:
+
+```
+/playlist.m3u
+/playlist/{name}.m3u
+/playlists
+```
+
+---
+
+## Available Endpoints
+
+```
+/
+Root landing page
+```
+
+```
+/playlist.m3u
+Returns the active playlist as an M3U file
+```
+
+```
+/playlists
+Returns a list of available playlists
+```
+
+```
+/playlist/{name}.m3u
+Returns a specific playlist
+```
+
+Examples:
+
+```
+http://YOUR-LAN-IP:5050/playlist/test1.m3u
+http://YOUR-LAN-IP:5050/playlist/test2.m3u
+```
+
+```
+/api/files
+Returns the currently active file list (JSON)
+```
+
+```
+/stream/{hash}
+Streams a specific media file
+(byte-range enabled for seeking and resume)
+```
+
+---
+
+## Web Interface
+
+TechStream includes a built-in web interface served from:
+
+```
+/web/index.html
+```
+
+Visiting the root server URL:
+
+```
+http://YOUR-LAN-IP:5050/
+```
+
+will load the default web interface, which allows:
+
+- browsing playlists
+- accessing server endpoints
+- playing media directly in the browser
+
+The `/web` directory can be modified to create a custom interface.
+
+---
+
+## Authentication (Optional)
 
 TechStream supports basic HTTP authentication.
 
-If authentication is enabled:
+If enabled:
 
--   Set a username and password in the application.
--   Check “Require Authentication”.
--   Restart the server if needed.
+- Set a username and password in the application
+- Enable **Require Authentication**
+- Restart the server
 
-When connecting from VLC or a browser, you will be prompted to enter the
-configured username and password.
+Clients will be prompted for credentials when connecting.
 
-If authentication is disabled, no credentials are required.
+---
 
-------------------------------------------------------------------------
+## Requirements
 
-SERVER BEHAVIOR
+- Windows 10 or Windows 11 (64-bit)
+- Devices must be on the same LAN network
 
-Root URL:
+This build is **self-contained** and does not require .NET installation.
 
-/
+---
 
-TechStream includes a default landing page located at:
+## Notes
 
-/web/index.html
+- Always connect using your **LAN IP address**
+- Do **not** use `127.0.0.1` from another device
+- The server binds to `0.0.0.0` for LAN access
+- Windows Firewall may prompt on first run
+- SmartScreen warnings may appear because the application is not code-signed
 
-When visiting:
+---
 
-	http://YOUR-LAN-IP:5050/
+## License
 
-The bundled landing page will be served.
+TechStream is distributed as compiled software.
 
-If you replace or modify:
+See **LICENSE.txt** for details.
 
-/web/index.html
+---
 
-Your custom page will be served instead.
-
-This allows users to build their own custom web interface.
-
-------------------------------------------------------------------------
-
-AVAILABLE ENDPOINTS
-
-/
-Root page (default landing page or custom web interface)
-
-/api/files
-Returns the indexed media list in JSON format
-
-/stream/{id}
-Streams a specific media file (byte-range enabled, supports seeking and
-browser playback)
-
-/playlist.m3u
-Generates a dynamic M3U playlist for use in VLC and compatible players
-
-------------------------------------------------------------------------
-
-IMPORTANT NOTES
-
--   Use your PC’s LAN IP address (not 127.0.0.1).
--   The server binds to 0.0.0.0 for LAN access.
--   You may need to allow the app through Windows Firewall.
--   Windows SmartScreen may show a warning because the app is not
-    code-signed. Click “More Info” → “Run Anyway”.
-
-------------------------------------------------------------------------
-
-DISCLAIMER
-
-TechStream is intended for streaming media you legally own or 
-have the legal right to use within your local network. 
-
-Users are solely responsible for ensuring their use of 
-the Software complies with applicable laws.
-
-Do not expose the server publicly unless you understand the risks and
-legal implications.
-
-------------------------------------------------------------------------
-
-All Rights Reserved – See LICENSE.txt
-
-------------------------------------------------------------------------
-
-Built with focus on simplicity, portability, and zero cloud dependency.
-
+Built with focus on **simplicity, portability, LAN-first design, and zero cloud dependency.**
