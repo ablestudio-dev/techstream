@@ -1,4 +1,4 @@
-# TechStream
+# TechStream  
 Lightweight LAN Media Streaming for Windows
 
 TechStream is a **portable LAN media server** designed for simple, fast streaming of local media libraries without cloud services.
@@ -28,7 +28,7 @@ No installer required.
 
 TechStream streams local media folders or M3U playlists over LAN using a built-in HTTP server.
 
-Version **3.x** introduces the **Persistent M3U Library system**, allowing multiple playlists to be hosted, browsed, and streamed through the upgraded built-in web interface while maintaining deterministic hash-based streaming for reliable resume behavior.
+Version **4.x** expands TechStream with a **metadata-enabled playlist system**, **poster and thumbnail support**, and an **upgraded default web interface** for browsing and streaming media libraries.
 
 ---
 
@@ -43,6 +43,9 @@ Version **3.x** introduces the **Persistent M3U Library system**, allowing multi
 - Playlist Manager for loading and organizing playlists
 - Host multiple playlists simultaneously
 - Resume-safe playlist switching
+- Playlist & file metadata support (Categories, Keywords, Posters)
+- Metadata-enabled M3U parsing (#TS-CATEGORY, #TS-KEYWORDS, #TS-POSTER)
+- Poster / thumbnail delivery endpoint (/thumb/{id})
 - Embedded browser video playback in the default web interface
 - Upgraded built-in web interface
 - Optional custom web interface
@@ -92,7 +95,7 @@ Available playlist routes:
 
 ```
 /playlist.m3u
-/playlist/{name}.m3u
+/playlist/{id}.m3u
 /playlists
 ```
 
@@ -123,8 +126,8 @@ Returns a specific playlist
 Examples:
 
 ```
-http://YOUR-LAN-IP:5050/playlist/test1.m3u
-http://YOUR-LAN-IP:5050/playlist/test2.m3u
+http://YOUR-LAN-IP:5050/playlist/movies.m3u
+http://YOUR-LAN-IP:5050/playlist/shows.m3u
 ```
 
 ```
@@ -136,6 +139,17 @@ Returns the currently active file list (JSON)
 /stream/{hash}
 Streams a specific media file
 (byte-range enabled for seeking and resume)
+```
+
+```
+/thumb/{id}
+Returns a poster or thumbnail image for a file
+```
+
+Examples:
+
+```
+http://YOUR-LAN-IP:5050/thumb/abc123
 ```
 
 ---
